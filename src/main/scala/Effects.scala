@@ -85,12 +85,15 @@ object Effects {
   // 1
   val clock: MyIO[Long] = MyIO(() => System.currentTimeMillis())
 
+
   // 2
   def measure[A](computation: MyIO[A]): MyIO[Long] = for {
     startTime <- clock
     _ <- computation
     finishTime <- clock
   } yield finishTime - startTime
+
+
 
   /*
     Deconstruction:
@@ -104,7 +107,7 @@ object Effects {
     Part 2:
     computation.flatMap(lambda) = MyIO(() => lambda(___COMP___).unsafeRun())
                                 = MyIO(() => MyIO(() => System.currentTimeMillis() - startTime)).unsafeRun())
-                                = MyIO(() => System.currentTimeMillis_after_computation() - startTime)
+                                = MyIO((  ) => System.currentTimeMillis_after_computation() - startTime)
 
     Part 1:
     clock.flatMap(startTime => MyIO(() => System.currentTimeMillis_after_computation() - startTime))
@@ -112,7 +115,9 @@ object Effects {
     = MyIO(() => System.currentTimeMillis_after_computation() - System.currentTimeMillis_at_start())
 
     Conclusion:
-    Deconstructing effects manually is hard. Scala & pure FP free up mental space for us to write complex code quickly.
+    Deconstructing effects manually is hard.
+    Scala & pure FP free up mental space for
+    us to write complex code quickly.
     Cats Effect will simply be a set of tools to do that easily.
    */
 
@@ -127,6 +132,7 @@ object Effects {
   // 4
   val read: MyIO[String] = MyIO(() => StdIn.readLine())
 
+
   def testConsole(): Unit = {
     val program: MyIO[Unit] = for {
       line1 <- read
@@ -138,7 +144,7 @@ object Effects {
   }
 
   def main(args: Array[String]): Unit = {
-    testConsole()
+    testTimeIO()
   }
 
 }
